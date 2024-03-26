@@ -40,43 +40,43 @@ public class CharacterSprite {
     public void draw(int step, GraphicsContext ctx, int x, int y) {
         if (direction == DIRECTION_DOWN) {
             if (step == 0) {
-                drawDownOne(ctx, 320, 320);
+                drawDownTwo(ctx, 320, 320);
             } else if (step == 1) {
-                drawDownTwo(ctx, 320, 320);
+                drawDownOne(ctx, 320, 320);
             } else if (step == 2) {
-                drawDownThree(ctx, 320, 320);
-            } else {
                 drawDownTwo(ctx, 320, 320);
+            } else {
+                drawDownThree(ctx, 320, 320);
             }
         } else if (direction == DIRECTION_LEFT) {
             if (step == 0) {
-                drawLeftOne(ctx, 320, 320);
+                drawLeftTwo(ctx, 320, 320);
             } else if (step == 1) {
-                drawLeftTwo(ctx, 320, 320);
+                drawLeftOne(ctx, 320, 320);
             } else if (step == 2) {
-                drawLeftThree(ctx, 320, 320);
-            } else {
                 drawLeftTwo(ctx, 320, 320);
+            } else {
+                drawLeftThree(ctx, 320, 320);
             }
         } else if (direction == DIRECTION_RIGHT) {
             if (step == 0) {
-                drawRightOne(ctx, 320, 320);
+                drawRightTwo(ctx, 320, 320);
             } else if (step == 1) {
-                drawRightTwo(ctx, 320, 320);
+                drawRightOne(ctx, 320, 320);
             } else if (step == 2) {
-                drawRightThree(ctx, 320, 320);
-            } else {
                 drawRightTwo(ctx, 320, 320);
+            } else {
+                drawRightThree(ctx, 320, 320);
             }
         } else if (direction== DIRECTION_UP) {
             if (step == 0) {
-                drawUpOne(ctx, 320, 320);
+                drawUpTwo(ctx, 320, 320);
             } else if (step == 1) {
-                drawUpTwo(ctx, 320, 320);
+                drawUpOne(ctx, 320, 320);
             } else if (step == 2) {
-                drawUpThree(ctx, 320, 320);
-            } else {
                 drawUpTwo(ctx, 320, 320);
+            } else {
+                drawUpThree(ctx, 320, 320);
             }
         }
     }

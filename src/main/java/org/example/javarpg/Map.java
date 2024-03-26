@@ -1,9 +1,16 @@
 package org.example.javarpg;
 
+import javafx.scene.SnapshotParameters;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
 
 public class Map {
+    public static final int TILE_SIZE = 64;
+    public static final int VIEWPORT_WIDTH_IN_TILES = 11;
+    public static final int VIEWPORT_HEIGHT_IN_TILES = 11;
+    public static final int SPRITE_SHEET_WIDTH_IN_TILES = 4;
     public static final int TILE_GRASS = 0;
     public static final int TILE_PATH_TOP_LEFT = 1;
     public static final int TILE_PATH_TOP = 2;
@@ -71,37 +78,45 @@ public class Map {
             { 12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12 },
     };
 
+    private final Image fullMapImage;
+
     public Map() {
         imageTiles = new Image("file:src/main/resources/tiles.png");
+        int mapHeight = tiles.length;
+        int mapWidth = tiles[0].length;
+        Canvas canvas = new Canvas(TILE_SIZE * mapWidth, TILE_SIZE * mapHeight);
+        GraphicsContext ctx = canvas.getGraphicsContext2D();
+
+
+        for (int x = 0; x < mapWidth; x++) {
+            for (int y = 0; y < mapHeight; y++) {
+                int tile = tiles[y][x];
+                int sheetOffsetX = (tile % SPRITE_SHEET_WIDTH_IN_TILES) * TILE_SIZE;
+                int sheetOffsetY = (tile / SPRITE_SHEET_WIDTH_IN_TILES) * TILE_SIZE;
+                ctx.drawImage(imageTiles, sheetOffsetX, sheetOffsetY, TILE_SIZE, TILE_SIZE, x * TILE_SIZE, y * TILE_SIZE,  TILE_SIZE, TILE_SIZE);
+            }
+        }
+        fullMapImage = canvas.snapshot(new SnapshotParameters(), null);
     }
 
     public void draw(GraphicsContext ctx, float characterX, float characterY) {
-        int mapOffsetX = (int)characterX - 5;
-        int mapOffsetY = (int)characterY - 5;
+        int screenOffsetX = (int) ((characterX - (VIEWPORT_WIDTH_IN_TILES / 2)) * TILE_SIZE);
+        int screenOffsetY = (int) ((characterY - (VIEWPORT_HEIGHT_IN_TILES / 2)) * TILE_SIZE);
+        ctx.drawImage(
+                fullMapImage,
 
-        int subOffsetX = (int)((characterX - (int)characterX) * 64);
-        int subOffsetY = (int)((characterY - (int)characterY) * 64);
+                // Image source coordinates
+                screenOffsetX,
+                screenOffsetY,
+                VIEWPORT_WIDTH_IN_TILES * TILE_SIZE,
+                VIEWPORT_HEIGHT_IN_TILES * TILE_SIZE,
 
-        int screenX = 0;
-        int screenY = 0;
-
-        for (int x = mapOffsetX; x <= mapOffsetX + 11; x++) {
-            for (int y = mapOffsetY; y <= mapOffsetY + 11; y++) {
-                if (x < 0 || y < 0 || x >= tiles[0].length || y >= tiles.length) {
-                    screenY += 64;
-                    continue;
-                }
-
-                int tile = tiles[y][x];
-                int sheetOffsetX = (tile % 4) * 64;
-                int sheetOffsetY = (tile / 4) * 64;
-
-                ctx.drawImage(imageTiles, sheetOffsetX, sheetOffsetY, 64, 64, screenX - subOffsetX, screenY - subOffsetY, 64, 64);
-                screenY += 64;
-            }
-            screenX += 64;
-            screenY = 0;
-        }
+                // Canvas destination coordinates
+                0,
+                0,
+                VIEWPORT_WIDTH_IN_TILES * TILE_SIZE,
+                VIEWPORT_HEIGHT_IN_TILES * TILE_SIZE
+        );
     }
 
     public boolean isTileWalkable(int x, int y) {

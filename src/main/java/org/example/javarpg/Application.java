@@ -23,7 +23,7 @@ public class Application extends javafx.application.Application {
     /**
      * The number of frames per second
      */
-    private final static int FRAMES_PER_SECOND = 30;
+    private final static int FRAMES_PER_SECOND = 60;
 
 
 

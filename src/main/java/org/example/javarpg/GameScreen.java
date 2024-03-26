@@ -5,7 +5,7 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 public class GameScreen extends Screen {
-    private static final float SMOOTH_STEP = 0.125f;
+    private static final float SMOOTH_STEP = 0.0625f;
     private Map map = new Map();
     private float characterX = 15;
     private float characterY = 15;
@@ -55,23 +55,20 @@ public class GameScreen extends Screen {
 
     @Override
     public void draw(Application application, GraphicsContext ctx, GameState gameState, long currentFrame) {
-        ctx.setFill(Color.DARKGREEN);
-        ctx.fillRect(0, 0, 704, 704);
-
         map.draw(ctx, characterX, characterY);
 
+        float stepDecimalPart =
+            gameState.getSprite().getDirection() == CharacterSprite.DIRECTION_DOWN  ||
+            gameState.getSprite().getDirection() == CharacterSprite.DIRECTION_UP ?
+                (characterY - (int)characterY) :
+                (characterX - (int)characterX);
+
         int step = 0;
-        float stepDiff = (characterX - (int)characterX);
-
-        if (stepDiff == 0) {
-            stepDiff = (characterY - (int)characterY);
-        }
-
-        if (stepDiff > 0 && stepDiff <= 0.25) {
+        if (stepDecimalPart > 0 && stepDecimalPart <= 0.25) {
             step = 1;
-        } else if (stepDiff > 0.25 && stepDiff <= 0.5) {
+        } else if (stepDecimalPart > 0.25 && stepDecimalPart <= 0.5) {
             step = 2;
-        } else if (stepDiff > 0.5 && stepDiff <= 0.75) {
+        } else if (stepDecimalPart > 0.5 && stepDecimalPart <= 0.75) {
             step = 3;
         }
 
