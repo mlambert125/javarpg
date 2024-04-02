@@ -6,17 +6,34 @@ import javafx.scene.paint.Color;
 
 public class GameScreen extends Screen {
     private static final float SMOOTH_STEP = 0.0625f;
-    private Map map = new Map();
+    private Map map = new OverworldMap(15, 15);
     private float characterX = 15;
     private float characterY = 15;
+    private int transitionFrame = 0;
 
     @Override
     public void update(Application application, KeyboardState keyboardState, GameState gameState, long currentFrame) {
+        if (transitionFrame > 0) {
+            transitionFrame--;
+            return;
+        }
         if (keyboardState.isKeyEscape()) {
             application.setCurrentScreen(new TitleScreen());
         }
 
         if (characterX - (int) characterX == 0 && characterY - (int) characterY == 0) {
+            Map nextMap = map.getNewMap((int)characterX, (int)characterY);
+
+            if (nextMap != null) {
+                transitionFrame = 22;
+                map = nextMap;
+                characterX = map.getStartX();
+                characterY = map.getStartY();
+                gameState.getSprite().setDirection(map.getStartDirection());
+
+                return;
+            }
+
             // We are on a specific tile and should read keyboard input to maybe move
             if (keyboardState.isKeyDown()) {
                 gameState.getSprite().setDirection(CharacterSprite.DIRECTION_DOWN);
@@ -55,6 +72,12 @@ public class GameScreen extends Screen {
 
     @Override
     public void draw(Application application, GraphicsContext ctx, GameState gameState, long currentFrame) {
+        if (transitionFrame > 0) {
+            ctx.setFill(Color.BLACK);
+            ctx.fillRect(0, 0, 706, 706);
+            return;
+        }
+
         map.draw(ctx, characterX, characterY);
 
         float stepDecimalPart =
